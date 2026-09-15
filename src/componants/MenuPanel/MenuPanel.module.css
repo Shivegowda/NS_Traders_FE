@@ -1,0 +1,158 @@
+/* Core Sidebar Container Layout */
+.sidebar {
+  min-height: 100vh;
+  background-color: #0f172a;
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: width 0.3s ease-in-out;
+  border-right: 1px solid #1e293b;
+  box-sizing: border-box;
+}
+
+.expanded {
+  width: 256px;
+}
+
+.collapsed {
+  width: 80px;
+}
+
+/* Header & Brand Layout */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  height: 64px;
+  border-b: 1px solid #1e293b;
+  box-sizing: border-box;
+}
+
+.brand {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  background: linear-gradient(to right, #60a5fa, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  white-space: nowrap;
+}
+
+/* Toggle Action Button */
+.toggleBtn {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, background-color 0.2s;
+  margin-left: auto;
+}
+
+.toggleBtn:hover {
+  color: #f8fafc;
+  background-color: #1e293b;
+}
+
+/* Navigation System Layout */
+.navContainer {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Menu Item Button Base Structure */
+.menuButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  color: #94a3b8;
+  text-align: left;
+}
+
+.menuButton:hover {
+  color: #f8fafc;
+  background-color: #1e293b;
+}
+
+.activeButton {
+  background-color: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+}
+
+.activeButton:hover {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+/* Icon Spacing Utilities */
+.iconCenter {
+  margin: 0 auto;
+}
+
+.iconMargin {
+  margin-right: 16px;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Collapsed Hover Tooltips */
+.tooltip {
+  position: absolute;
+  left: 100%;
+  margin-left: 16px;
+  padding: 4px 8px;
+  background-color: #020617;
+  color: #f8fafc;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  z-index: 50;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.menuButton:hover .tooltip {
+  opacity: 1;
+}
+
+/* Footer Section */
+.footer {
+  padding: 12px;
+  border-top: 1px solid #1e293b;
+}
+
+.logoutButton {
+  color: #fb7185;
+}
+
+.logoutButton:hover {
+  color: #ffe4e6;
+  background-color: rgba(225, 29, 72, 0.15);
+}
+
+.logoutTooltip {
+  background-color: #4c0519;
+  color: #fecdd3;
+}

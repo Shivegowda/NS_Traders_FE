@@ -1,38 +1,35 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
-import { LoginForm } from './componants/Login/LoginForm';
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import { LoginComponent } from './componants/login/Login';
+import { ProtectedRoute } from './componants/layout/ProtectedRoute';
 
-// A simple home dashboard placeholder component
-const Dashboard: React.FC = () => {
-  return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif', textAlign: 'center' }}>
-      <h1>Welcome to the Dashboard!</h1>
-      <p>You have successfully bypassed the login page.</p>
-      <Link to="/login" style={{ color: '#007bff', textDecoration: 'none' }}>
-        Log Out
-      </Link>
-    </div>
-  );
+const DashboardDummy: React.FC = () => (
+  <div style={{ padding: '20px' }}>
+    <h2>Secure Dashboard</h2>
+    <p>Authentication authorized.</p>
+  </div>
+);
+
+const router = createBrowserRouter([
+  {
+    path: '/login',
+    element: <LoginComponent />,
+  },
+  {
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: '/dashboard',
+        element: <DashboardDummy />,
+      },
+    ],
+  },
+  {
+    path: '*',
+    element: <Navigate to="/login" replace />,
+  },
+]);
+
+export const App: React.FC = () => {
+  return <RouterProvider router={router} />;
 };
-
-function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        {/* Redirect empty root paths straight to login, or load a landing page */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        
-        {/* Render your Formik Login Page when visiting /login */}
-        <Route path="/login" element={<LoginForm />} />
-        
-        {/* Secure or subsequent view target path */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        
-        {/* Catch-all 404 Route redirecting back to login */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
-
-export default App;
