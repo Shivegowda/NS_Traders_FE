@@ -49,6 +49,7 @@ axiosInstance.interceptors.response.use(
  */
 const apiClient = {
   get: <T>(url: string, config?: AxiosRequestConfig): Promise<T> => {
+    console.log(`GET Request to: ${url} with config:`, config);
     return axiosInstance.get<T>(url, config)
       .then((response: AxiosResponse<T>) => response.data);
   },

@@ -13,6 +13,7 @@ import {
   ShoppingCart
 } from 'lucide-react';
 import styles from './MenuPanel.module.css';
+import { useNavigate } from 'react-router-dom';
 
 // Type contract defining a single configuration node in our nav tree
 interface MenuItem {
@@ -28,16 +29,21 @@ const MENU_ITEMS: MenuItem[] = [
   { id: 'Buyers', label: 'Buyers', icon: UserCheck, path: '/buyers' },
   { id: 'Purchase_Orders', label: 'Purchase Orders', icon: ShoppingCart, path: '/purchase-orders' },
   { id: 'Sell_Orders', label: 'Sell Orders', icon: TrendingUp, path: '/sell-orders' },
-
   { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' },
 ];
 
 export default function MenuPanel(): React.JSX.Element {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [activeItem, setActiveItem] = useState<string>('dashboard');
+  const navigate = useNavigate();
+
 
   const toggleSidebar = (): void => {
     setIsCollapsed(prev => !prev);
+  };
+  const handleItemClick = (id: string, path: string) => {
+    setActiveItem(id);
+    navigate(path); 
   };
 
   return (
@@ -51,7 +57,7 @@ export default function MenuPanel(): React.JSX.Element {
         <div className={styles.header}>
           {!isCollapsed && (
             <span className={styles.brand}>
-              APP CORE
+              NST TRADERS 
             </span>
           )}
           <button 
@@ -72,7 +78,7 @@ export default function MenuPanel(): React.JSX.Element {
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveItem(item.id)}
+                onClick={() => handleItemClick(item.id, item.path)}
                 className={`${styles.menuButton} ${isActive ? styles.activeButton : ''}`}
               >
                 <Icon 

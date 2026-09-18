@@ -2,13 +2,10 @@ import React from 'react';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { LoginComponent } from './componants/login/Login';
 import { ProtectedRoute } from './componants/layout/ProtectedRoute';
+import { Dashboard } from './componants/DashBoard/Dashboard';
+import { FarmersManagement } from './componants/farmersManagement/FarmersManagement';
 
-const DashboardDummy: React.FC = () => (
-  <div style={{ padding: '20px' }}>
-    <h2>Secure Dashboard</h2>
-    <p>Authentication authorized.</p>
-  </div>
-);
+
 
 const router = createBrowserRouter([
   {
@@ -20,8 +17,12 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/dashboard',
-        element: <DashboardDummy />,
+        element: <Dashboard />,
       },
+      {
+        path: '/farmers',
+        element: <FarmersManagement />,
+      }
     ],
   },
   {
