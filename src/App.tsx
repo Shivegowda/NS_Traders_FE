@@ -4,6 +4,7 @@ import { LoginComponent } from './componants/login/Login';
 import { ProtectedRoute } from './componants/layout/ProtectedRoute';
 import { Dashboard } from './componants/DashBoard/Dashboard';
 import { FarmersManagement } from './componants/farmersManagement/FarmersManagement';
+import { ProductManagement } from './componants/products/ProductManagement';
 
 
 
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: '/farmers',
         element: <FarmersManagement />,
+      },
+      {
+        path: '/products',
+        element: <ProductManagement />,
       }
     ],
   },

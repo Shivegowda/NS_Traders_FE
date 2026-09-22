@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { 
-  Home, 
-  BarChart2, 
+  Home,
   Users, 
-  Settings, 
   LogOut, 
   Menu, 
   ChevronLeft,
   type LucideIcon, 
   UserCheck,
-  TrendingUp,
-  ShoppingCart
+  ShoppingCart,
+  ShoppingBasket
 } from 'lucide-react';
 import styles from './MenuPanel.module.css';
 import { useNavigate } from 'react-router-dom';
@@ -28,8 +26,8 @@ const MENU_ITEMS: MenuItem[] = [
   { id: 'Farmers', label: 'Farmers', icon: Users, path: '/farmers' },
   { id: 'Buyers', label: 'Buyers', icon: UserCheck, path: '/buyers' },
   { id: 'Purchase_Orders', label: 'Purchase Orders', icon: ShoppingCart, path: '/purchase-orders' },
-  { id: 'Sell_Orders', label: 'Sell Orders', icon: TrendingUp, path: '/sell-orders' },
-  { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' },
+  { id: 'Sell_Orders', label: 'Sell Orders', icon: ShoppingCart, path: '/sell-orders' },
+  { id: 'products', label: 'Products', icon: ShoppingBasket, path: '/products' },
 ];
 
 export default function MenuPanel(): React.JSX.Element {
