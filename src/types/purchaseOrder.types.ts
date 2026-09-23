@@ -17,3 +17,17 @@ export interface ViewOrdersApiResponse {
   };
   message: string;
 }
+
+export interface EditPurchaseOrderRequest {
+  orderId: number;
+  quantity: number;
+  rate: number;
+  amount: number;
+}
+
+export interface EditPurchaseOrderApiResponse {
+    data: {
+    item: PurchaseOrder;
+  };
+  message: string;
+}

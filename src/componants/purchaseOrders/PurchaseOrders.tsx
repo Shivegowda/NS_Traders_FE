@@ -1,10 +1,50 @@
 import MenuPanel from '../MenuPanel/MenuPanel';
 import styles from './PurchaseOrders.module.css';
 import { formatBackendTimestamp } from '../../utility/DateConversionUtility';
-import { usePurchaseOrders } from '../../hooks/usePurchaseOrder';
+import { usePurchaseOrders, useEditPurchaseOrder } from '../../hooks/usePurchaseOrder';
+import type { PurchaseOrder } from '../../types/purchaseOrder.types';
+import { useState } from 'react';
 
 export const PurchaseOrders: React.FC = () => {
   const { data: orders = [], isLoading, isError, error } = usePurchaseOrders('DRAFT');
+    const { mutate: editPurchaseOrder } = useEditPurchaseOrder();
+
+    const [editingPurchaseOrder, setEditingPurchaseOrder] = useState<PurchaseOrder | null>(null);
+  
+
+  /* =========================================================================
+     2. EDIT FORM ACTION HANDLERS
+     ========================================================================= */
+  const handleEditClick = (order: PurchaseOrder) => {
+    setEditingPurchaseOrder({ ...order });
+  };
+
+  const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    if (!editingPurchaseOrder) return;
+    const { name, value } = e.target;
+    const updatedOrder = { ...editingPurchaseOrder, [name]: value};
+    if (name === 'quantity' ) {
+      const newQuantity = Number(value) || 0;
+      const currentRate = Number(updatedOrder.rate) || 0;
+      updatedOrder.amount = newQuantity * currentRate;
+     }
+    setEditingPurchaseOrder(updatedOrder);
+  };
+
+  const handleEditFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingPurchaseOrder) return;
+
+    if (window.confirm(`Are you sure you want to save modifications for "${editingPurchaseOrder.productName}"?`)) {
+      editPurchaseOrder(editingPurchaseOrder, {
+        onSuccess: () => {
+          setEditingPurchaseOrder(null); 
+        }
+      });
+    }
+  };
+
+
 
  return (
     <div className={styles.container}>
@@ -22,8 +62,6 @@ export const PurchaseOrders: React.FC = () => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Order Id</th>
-                <th>product Id </th>
                 <th>Product Name</th>
                 <th>Product Rate</th>
                 <th>Product Quantity</th>
@@ -35,18 +73,19 @@ export const PurchaseOrders: React.FC = () => {
             </thead>
             <tbody>
               {orders.map((order) => (
-                <tr key={order.productId}>
-                  <td>{order.productId}</td>
+                <tr key={order.orderId}>
+                  <td>{order.orderId}</td>
                   <td>{order.productName}</td>
-                  <td>{order.amount}</td>
+                  <td>{order.rate} </td>
                   <td>{order.quantity}</td>
-                 
+                  <td>{order.amount}</td>
+                  <td>{order.orderedByName}</td>
                   <td>{formatBackendTimestamp(order.createdDate)}</td>
-                  {/* <td>
-                    <button className={styles.editButton} onClick={() => handleEditClick(product)}>
+                   <td>
+                    <button className={styles.editButton} onClick={() => handleEditClick(order)}>
                       Edit
                     </button>
-                  </td> */}
+                  </td> 
                 </tr>
               ))}
               {orders.length === 0 && (
@@ -58,6 +97,56 @@ export const PurchaseOrders: React.FC = () => {
           </table>
         </div>
       </main>
+              
+        {editingPurchaseOrder && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h3>Edit Purchase Order Details</h3>
+            <form onSubmit={handleEditFormSubmit}>
+              <div className={styles.formGroup}>
+                <label>Product Name</label>
+                <label>{editingPurchaseOrder.productName}</label>
+              </div>
+              <div className={styles.formGroup}>
+                <label>Product Rate</label>
+                <label>{editingPurchaseOrder.rate}</label>
+              </div>
+              <div className={styles.formGroup}>
+                <label>Product quantity</label>
+                <input
+                  type="text"
+                  name="quantity"
+                  value={editingPurchaseOrder.quantity}
+                  onChange={handleEditInputChange}
+                  required
+                />
+              </div>
+             <div className={styles.formGroup}>
+                <label>Amount</label>
+                 <input
+                  type="text"
+                  name="amount"
+                  value={editingPurchaseOrder.quantity * editingPurchaseOrder.rate}
+                  onChange={handleEditInputChange}
+                  readOnly
+                  required
+                />
+              </div>
+              <div className={styles.modalActions}>
+                <button type="button" className={styles.cancelButton} onClick={() => setEditingPurchaseOrder(null)}>
+                  Cancel
+                </button>
+                <button type="submit" className={styles.saveButton}>
+                  Confirm & Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
     );
+
+  
 }
