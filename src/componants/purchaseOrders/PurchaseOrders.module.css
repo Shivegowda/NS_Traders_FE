@@ -1,0 +1,251 @@
+.container {
+  display:flex;
+  width: 100%;
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.mainContent {
+  flex:1;
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 0 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #111827;
+}
+
+.addButton {
+  background-color: #2563eb;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.addButton:hover {
+  background-color: #1d4ed8;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th, .table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table th {
+  background-color: #f9fafb;
+  color: #374151;
+  font-weight: 600;
+}
+
+.statusBadge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.active {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.inactive {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.editButton, .deleteButton {
+  padding: 6px 12px;
+  margin-right: 8px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.editButton {
+  background-color: #f3f4f6;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.editButton:hover {
+  background-color: #e5e7eb;
+}
+
+.deleteButton {
+  background-color: #ef4444;
+  color: white;
+}
+
+.deleteButton:hover {
+  background-color: #dc2626;
+}
+
+.loading, .error, .noData {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+/* =========================================================================
+   Modal Layout & Backdrop Styling 
+   ========================================================================= */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Dimmed backdrop background */
+  backdrop-filter: blur(4px);            /* Subtle modern glass blur effect */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;                         /* Ensure modal overlays all page content */
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modalContent {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 480px;                      /* Compact, responsive forms container */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.2s ease-out;
+}
+
+.modalContent h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #333333;
+  font-size: 1.5rem;
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 0.75rem;
+}
+
+/* =========================================================================
+   Form Fields Controls
+   ========================================================================= */
+.formGroup {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formGroup label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #555555;
+}
+
+/* Unified text field input design constraints */
+.formGroup input[type="text"] {
+  padding: 0.75rem;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.15s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.formGroup input[type="text"]:focus {
+  outline: none;
+  border-color: #4f46e5;                 /* Changes color on focus state activation */
+}
+
+/* Custom styled dropdown select dropdown element */
+.selectInput {
+  padding: 0.75rem;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: #ffffff;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.selectInput:focus {
+  outline: none;
+  border-color: #4f46e5;
+}
+
+/* =========================================================================
+   Modal Footer Control Triggers
+   ========================================================================= */
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.cancelButton {
+  padding: 0.75rem 1.25rem;
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  color: #4b5563;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.cancelButton:hover {
+  background-color: #e5e7eb;
+}
+
+.saveButton {
+  padding: 0.75rem 1.5rem;
+  background-color: #4f46e5;             /* High contrast functional action button color */
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.saveButton:hover {
+  background-color: #4338ca;
+}
+
+/* =========================================================================
+   Keyframe Animations
+   ========================================================================= */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
