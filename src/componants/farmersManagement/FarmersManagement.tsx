@@ -17,7 +17,6 @@ const initialAddFormState: AddFarmerPayload = {
 export const FarmersManagement: React.FC = () => {
   const { data: farmers = [], isLoading, isError, error } = useFarmers();
   const { mutate: editFarmer } = useEditFarmers();
-  // 2. Consume your existing add hook mutation
   const { mutate: addFarmer } = useAddFarmer(); 
 
   // Modals UI and Input states
