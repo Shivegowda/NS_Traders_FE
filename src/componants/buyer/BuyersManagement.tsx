@@ -78,12 +78,12 @@ export const BuyersManagement: React.FC = () => {
            <div className={styles.container}>
       <MenuPanel />
       <main className={styles.mainContent}>
-        {/* <div className={styles.header}>
-          <h2>Farmers Management</h2>
+         <div className={styles.header}>
+          <h2>Buyers Management</h2>
           <button className={styles.addButton} onClick={() => setIsAddModalOpen(true)}>
-            + Add New Farmer
+            + Add New Buyer
           </button>
-        </div> */}
+        </div> 
         
         <div className={styles.tableWrapper}>
           <table className={styles.table}>
@@ -111,11 +111,11 @@ export const BuyersManagement: React.FC = () => {
                     </span>
                   </td>
                   <td>{new Date(buyer.createdDate).toLocaleDateString()}</td>
-                   {/* <td>
+                    <td>
                     <button className={styles.editButton} onClick={() => handleEditClick(buyer)}>
                       Edit
                     </button>
-                  </td>  */}
+                  </td>  
                 </tr>
               ))}
               {buyers.length === 0 && (
@@ -140,7 +140,7 @@ export const BuyersManagement: React.FC = () => {
                 <label>Buyer Name</label>
                 <input
                   type="text"
-                  name="buyerName"
+                  name="BuyerName"
                   value={newBuyer.BuyerName}
                   onChange={handleAddInputChange}
                   placeholder="Enter full name"
@@ -178,7 +178,6 @@ export const BuyersManagement: React.FC = () => {
                   className={styles.selectInput}
                 >
                   <option value="ACTIVE">Active</option>
-                  <option value="INACTIVE">Inactive</option>
                 </select>
               </div>
               <div className={styles.modalActions}>

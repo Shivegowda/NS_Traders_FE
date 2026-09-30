@@ -27,7 +27,8 @@ export const useAddBuyer =() => {
 
   return useMutation({
     mutationFn: (payload: BuyerDetails) => {
-      return apiClient.post('/buyers/add', payload);
+      const { BuyerId, ...rest } = payload; 
+      return apiClient.post('/buyers/add', rest);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['buyers'] });
@@ -42,7 +43,7 @@ export const useEditBuyer =() => {
 
   return useMutation({
     mutationFn: (payload: BuyerDetails) => {
-      return apiClient.post('/buyers/update', payload);
+      return apiClient.put('/buyers/update', payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['buyers'] });
