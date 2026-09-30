@@ -1,9 +1,11 @@
 import MenuPanel from '../MenuPanel/MenuPanel';
 import styles from './PurchaseOrders.module.css';
 import { formatBackendTimestamp } from '../../utility/DateConversionUtility';
-import { usePurchaseOrders, useEditPurchaseOrder, useAddDraftOrder, useProductListDropDown, useFarmerListDropDown, useDeleteDraftOrder } from '../../hooks/usePurchaseOrder';
+import { usePurchaseOrders, useEditPurchaseOrder, useAddDraftOrder, useProductListDropDown, 
+  useFarmerListDropDown, useDeleteDraftOrder, useSubmitDraftOrder } from '../../hooks/usePurchaseOrder';
 import type { NewOrderPayload, PurchaseOrder } from '../../types/purchaseOrder.types';
 import { useState } from 'react';
+import { Check, Delete, Pencil } from 'lucide-react';
 
 const initialAddFormState: NewOrderPayload = {
                 "amount": 0,
@@ -18,18 +20,22 @@ const initialAddFormState: NewOrderPayload = {
 
 export const PurchaseOrders: React.FC = () => {
   const { data: orders = [], isLoading, isError, error } = usePurchaseOrders('DRAFT');
+
     const { mutate: editPurchaseOrder } = useEditPurchaseOrder();
     const { mutate: addDraftOrder } = useAddDraftOrder();
     const { mutate: deleteDraftOrder } = useDeleteDraftOrder();
+    const {mutate: submitDraftOrder} = useSubmitDraftOrder();
     
 
 
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState<boolean>(false);
   const [newDraftOrder, setNewDraftOrder] = useState<NewOrderPayload>(initialAddFormState);
   const [editingPurchaseOrder, setEditingPurchaseOrder] = useState<PurchaseOrder | null>(null);
 
     const {data: productList = [], isLoading: isProductListLoading } = useProductListDropDown(isAddModalOpen);
     const {data: farmerList = [], isLoading: isFarmerListLoading } = useFarmerListDropDown(isAddModalOpen);
+    const {data: submittedOrders = [], isLoading: isSubmittedOrdersLoading, isError: isSubmittedOrdersError, error: submittedOrdersError } = usePurchaseOrders('ORDER');
 
      /* =========================================================================
          1. ADD FORM ACTION HANDLERS
@@ -120,6 +126,20 @@ export const PurchaseOrders: React.FC = () => {
   };
 };
 
+ /* =========================================================================
+     3. SUBMIT FORM ACTION HANDLERS
+     ========================================================================= */
+
+  const handleSubmitClick = (order: PurchaseOrder) => {
+  if (window.confirm(`Are you sure you want to Submit Draft order for ${order.productName}?`)) {
+    submitDraftOrder(order, {
+      onSuccess: () => {
+        alert('Draft order submitted successfully');
+      },
+    });
+  };
+}
+
 
 
  return (
@@ -128,6 +148,9 @@ export const PurchaseOrders: React.FC = () => {
       <main className={styles.mainContent}>
         <div className={styles.header}>
           <h2>Purchase Draft Orders</h2>
+          <button className={styles.viewButton} onClick={() => setIsViewModalOpen(true)}>
+          View Submitted Orders
+          </button> 
            <button className={styles.addButton} onClick={() => setIsAddModalOpen(true)}>
             + Add New Product
           </button> 
@@ -144,7 +167,10 @@ export const PurchaseOrders: React.FC = () => {
                 <th>Amount</th>
                 <th>Ordered By</th>
                 <th>Created Date</th>
-                <th>Actions</th>
+                <th>Edit</th>
+                <th>Delete</th>
+                <th>Submit</th>
+
               </tr>
             </thead>
             <tbody>
@@ -159,12 +185,17 @@ export const PurchaseOrders: React.FC = () => {
                   <td>{formatBackendTimestamp(order.createdDate)}</td>
                    <td>
                     <button className={styles.editButton} onClick={() => handleEditClick(order)}>
-                      Edit
+                      <Pencil size={16} className={styles.editIcon} />
                     </button>
                   </td> 
                    <td>
                     <button className={styles.deleteButton} onClick={() => handleDeleteClick(order)}>
-                      Delete
+                      <Delete size={16} className={styles.deleteIcon} />
+                    </button>
+                  </td> 
+                   <td>
+                    <button className={styles.submitButton} onClick={() => handleSubmitClick(order)}>
+                      <Check size={16} className={styles.submitIcon} />
                     </button>
                   </td> 
                 </tr>
@@ -293,6 +324,50 @@ export const PurchaseOrders: React.FC = () => {
           </div>
         </div>
       )}
+
+      {isViewModalOpen && (
+         <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+          <h2>Purchase Submitted Orders</h2>
+     <div className={styles.tableWrapper}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Product Name</th>
+                <th>Product Rate</th>
+                <th>Product Quantity</th>
+                <th>Amount</th>
+                <th>Ordered By</th>
+                <th>Created Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {submittedOrders.map((submittedOrder) => (
+                <tr key={submittedOrder.orderId}>
+                  <td>{submittedOrder.orderId}</td>
+                  <td>{submittedOrder.productName}</td>
+                  <td>{submittedOrder.rate} </td>
+                  <td>{submittedOrder.quantity}</td>
+                  <td>{submittedOrder.amount}</td>
+                  <td>{submittedOrder.orderedByName}</td>
+                  <td>{formatBackendTimestamp(submittedOrder.createdDate)}</td>
+                </tr>
+              ))}
+              {submittedOrders.length === 0 && (
+                <tr>
+                  <td colSpan={7} className={styles.noData}>No submitted orders found.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+           <button className={styles.closeButton} onClick={() => setIsViewModalOpen(false)}>
+          Close
+        </button>
+        </div>
+        </div>
+        </div>
+     )}
 
     </div>
     );

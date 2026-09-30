@@ -1,88 +1,89 @@
-import React, { useState } from 'react';
-// 1. Import both edit and add custom hooks
-import { useFarmers, useEditFarmers, useAddFarmer } from '../../hooks/useFarmer'; 
-import type { ViewFarmer, AddFarmerPayload } from '../../types/farmer.types';
-import styles from './FarmersManagement.module.css';
-import MenuPanel from '../MenuPanel/MenuPanel';
+import MenuPanel from "../MenuPanel/MenuPanel";
+import styles from "./BuyersManagement.module.css";
+import { useAddBuyer, useEditBuyer, useViewBuyers } from "../../hooks/useBuyer";
+import type { BuyerDetails } from "../../types/buyer.types";
+import { useState } from "react";
 
 
-
-const initialAddFormState: AddFarmerPayload = {
-  farmerName: '',
+const initialAddFormState: BuyerDetails = {
+  BuyerId: 0,
+  BuyerName: '',
   mobileNumber: '',
   address: '',
   status: 'ACTIVE',
+  createdDate: new Date().toISOString()
 };
 
-export const FarmersManagement: React.FC = () => {
-  const { data: farmers = [], isLoading, isError, error } = useFarmers();
-  const { mutate: editFarmer } = useEditFarmers();
-  const { mutate: addFarmer } = useAddFarmer(); 
-
-  // Modals UI and Input states
-  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
-  const [newFarmer, setNewFarmer] = useState<AddFarmerPayload>(initialAddFormState);
-  const [editingFarmer, setEditingFarmer] = useState<ViewFarmer | null>(null);
-
-  /* =========================================================================
-     1. ADD FORM ACTION HANDLERS
-     ========================================================================= */
-  const handleAddInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setNewFarmer((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleAddFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+export const BuyersManagement: React.FC = () => {
+    const {data: buyers = [], isLoading, isError, error} = useViewBuyers();
+    const [newBuyer, setNewBuyer] = useState<BuyerDetails>(initialAddFormState);
+      const [editingBuyer, setEditingBuyer] = useState<BuyerDetails | null>(null);
     
-    // 3. Wired up the useAddFarmer mutation call
-    addFarmer(newFarmer, { 
-      onSuccess: () => {
-        setIsAddModalOpen(false);
-        setNewFarmer(initialAddFormState); // Clear form fields
-      } 
-    });
-  };
 
-  /* =========================================================================
-     2. EDIT FORM ACTION HANDLERS
-     ========================================================================= */
-  const handleEditClick = (farmer: ViewFarmer) => {
-    setEditingFarmer({ ...farmer });
-  };
+    const { mutate: addBuyer } = useAddBuyer();
+    const {mutate: editBuyer} = useEditBuyer();
 
-  const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    if (!editingFarmer) return;
-    const { name, value } = e.target;
-    setEditingFarmer({ ...editingFarmer, [name]: value });
-  };
+  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
 
-  const handleEditFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingFarmer) return;
 
-    if (window.confirm(`Are you sure you want to save modifications for "${editingFarmer.farmerName}"?`)) {
-      editFarmer(editingFarmer, {
+   /* =========================================================================
+       1. ADD FORM ACTION HANDLERS
+       ========================================================================= */
+    const handleAddInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const { name, value } = e.target;
+      setNewBuyer((prev) => ({ ...prev, [name]: value }));
+    };
+  
+    const handleAddFormSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      
+      // 3. Wired up the useAddFarmer mutation call
+      addBuyer(newBuyer, { 
         onSuccess: () => {
-          setEditingFarmer(null); 
-        }
+          setIsAddModalOpen(false);
+          setNewBuyer(initialAddFormState); // Clear form fields
+        } 
       });
-    }
-  };
+    };
+ /* =========================================================================
+       1. EDIT FORM ACTION HANDLERS
+       ========================================================================= */
+ const handleEditClick = (buyer: BuyerDetails) => {
+     setEditingBuyer({ ...buyer });
+   };
+ 
+   const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+     if (!editingBuyer) return;
+     const { name, value } = e.target;
+     setEditingBuyer({ ...editingBuyer, [name]: value });
+   };
+ 
+   const handleEditFormSubmit = (e: React.FormEvent) => {
+     e.preventDefault();
+     if (!editingBuyer) return;
+ 
+     if (window.confirm(`Are you sure you want to save modifications for "${editingBuyer.BuyerName}"?`)) {
+       editBuyer(editingBuyer, {
+         onSuccess: () => {
+           setEditingBuyer(null); 
+         }
+       });
+     }
+   };
 
-  if (isLoading) return <div className={styles.loading}>Loading farmers...</div>;
-  if (isError) return <div className={styles.error}>Error: {error.message}</div>;
+  
 
-  return (
-    <div className={styles.container}>
+        return (
+           <div className={styles.container}>
       <MenuPanel />
       <main className={styles.mainContent}>
-        <div className={styles.header}>
-          <h2>Farmers Management</h2>
+         <div className={styles.header}>
+          <h2>Buyers Management</h2>
           <button className={styles.addButton} onClick={() => setIsAddModalOpen(true)}>
-            + Add New Farmer
+            + Add New Buyer
           </button>
-        </div>
+        </div> 
         
         <div className={styles.tableWrapper}>
           <table className={styles.table}>
@@ -98,49 +99,49 @@ export const FarmersManagement: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {farmers.map((farmer) => (
-                <tr key={farmer.farmerId}>
-                  <td>{farmer.farmerId}</td>
-                  <td>{farmer.farmerName}</td>
-                  <td>{farmer.mobileNumber}</td>
-                  <td>{farmer.address}</td>
+              {buyers.map((buyer) => (
+                <tr key={buyer.BuyerId}>
+                  <td>{buyer.BuyerId}</td>
+                  <td>{buyer.BuyerName}</td>
+                  <td>{buyer.mobileNumber}</td>
+                  <td>{buyer.address}</td>
                   <td>
-                    <span className={`${styles.statusBadge} ${farmer.status === 'ACTIVE' ? styles.active : styles.inactive}`}>
-                      {farmer.status}
+                    <span className={`${styles.statusBadge} ${buyer.status === 'ACTIVE' ? styles.active : styles.inactive}`}>
+                      {buyer.status}
                     </span>
                   </td>
-                  <td>{new Date(farmer.createdDate).toLocaleDateString()}</td>
-                  <td>
-                    <button className={styles.editButton} onClick={() => handleEditClick(farmer)}>
+                  <td>{new Date(buyer.createdDate).toLocaleDateString()}</td>
+                    <td>
+                    <button className={styles.editButton} onClick={() => handleEditClick(buyer)}>
                       Edit
                     </button>
-                  </td>
+                  </td>  
                 </tr>
               ))}
-              {farmers.length === 0 && (
+              {buyers.length === 0 && (
                 <tr>
-                  <td colSpan={7} className={styles.noData}>No farmers found.</td>
+                  <td colSpan={7} className={styles.noData}>No buyers found.</td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
-      </main>
-
+      </main>   
+      
       {/* =========================================================================
          ADD NEW FARMER MODAL PANEL
          ========================================================================= */}
       {isAddModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <h3>Add New Farmer</h3>
+            <h3>Add New Buyer</h3>
             <form onSubmit={handleAddFormSubmit}>
               <div className={styles.formGroup}>
-                <label>Farmer Name</label>
+                <label>Buyer Name</label>
                 <input
                   type="text"
-                  name="farmerName"
-                  value={newFarmer.farmerName}
+                  name="BuyerName"
+                  value={newBuyer.BuyerName}
                   onChange={handleAddInputChange}
                   placeholder="Enter full name"
                   required
@@ -151,7 +152,7 @@ export const FarmersManagement: React.FC = () => {
                 <input
                   type="text"
                   name="mobileNumber"
-                  value={newFarmer.mobileNumber}
+                  value={newBuyer.mobileNumber}
                   onChange={handleAddInputChange}
                   placeholder="Enter mobile number"
                   required
@@ -162,7 +163,7 @@ export const FarmersManagement: React.FC = () => {
                 <input
                   type="text"
                   name="address"
-                  value={newFarmer.address}
+                  value={newBuyer.address}
                   onChange={handleAddInputChange}
                   placeholder="Enter residential address"
                   required
@@ -172,12 +173,11 @@ export const FarmersManagement: React.FC = () => {
                 <label>Status</label>
                 <select
                   name="status"
-                  value={newFarmer.status}
+                  value={newBuyer.status}
                   onChange={handleAddInputChange}
                   className={styles.selectInput}
                 >
                   <option value="ACTIVE">Active</option>
-                  <option value="INACTIVE">Inactive</option>
                 </select>
               </div>
               <div className={styles.modalActions}>
@@ -185,7 +185,7 @@ export const FarmersManagement: React.FC = () => {
                   Cancel
                 </button>
                 <button type="submit" className={styles.saveButton}>
-                  Create Farmer
+                  Create Buyer
                 </button>
               </div>
             </form>
@@ -193,20 +193,20 @@ export const FarmersManagement: React.FC = () => {
         </div>
       )}
 
-      {/* =========================================================================
+        {/* =========================================================================
          EDIT FARMER MODAL PANEL
          ========================================================================= */}
-      {editingFarmer && (
+      {editingBuyer && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <h3>Edit Farmer Details</h3>
+            <h3>Edit Buyer Details</h3>
             <form onSubmit={handleEditFormSubmit}>
               <div className={styles.formGroup}>
-                <label>Farmer Name</label>
+                <label>Buyer Name</label>
                 <input
                   type="text"
-                  name="farmerName"
-                  value={editingFarmer.farmerName}
+                  name="buyerName"
+                  value={editingBuyer.BuyerName}
                   onChange={handleEditInputChange}
                   required
                 />
@@ -216,7 +216,7 @@ export const FarmersManagement: React.FC = () => {
                 <input
                   type="text"
                   name="mobileNumber"
-                  value={editingFarmer.mobileNumber}
+                  value={editingBuyer.mobileNumber}
                   onChange={handleEditInputChange}
                   required
                 />
@@ -226,7 +226,7 @@ export const FarmersManagement: React.FC = () => {
                 <input
                   type="text"
                   name="address"
-                  value={editingFarmer.address}
+                  value={editingBuyer.address}
                   onChange={handleEditInputChange}
                   required
                 />
@@ -235,7 +235,7 @@ export const FarmersManagement: React.FC = () => {
                 <label>Status</label>
                 <select
                   name="status"
-                  value={editingFarmer.status}
+                  value={editingBuyer.status}
                   onChange={handleEditInputChange}
                   className={styles.selectInput}
                 >
@@ -244,7 +244,7 @@ export const FarmersManagement: React.FC = () => {
                 </select>
               </div>
               <div className={styles.modalActions}>
-                <button type="button" className={styles.cancelButton} onClick={() => setEditingFarmer(null)}>
+                <button type="button" className={styles.cancelButton} onClick={() => setEditingBuyer(null)}>
                   Cancel
                 </button>
                 <button type="submit" className={styles.saveButton}>
@@ -255,6 +255,7 @@ export const FarmersManagement: React.FC = () => {
           </div>
         </div>
       )}
+
     </div>
-  );
-};
+     );
+}

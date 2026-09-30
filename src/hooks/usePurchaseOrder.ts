@@ -2,7 +2,6 @@ import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import apiClient from '../api/apiClient';
 import type { EditPurchaseOrderApiResponse, EditPurchaseOrderRequest, FarmerDropDown, FarmerListResponse, NewOrderPayload, Product, ProductListResponse, PurchaseOrder, ViewOrdersApiResponse } from '../types/purchaseOrder.types';
 import type {AxiosRequestConfig} from 'axios';
-import { useState } from 'react';
 
 const fetchPurchaseOrders = (orderType: string): Promise<PurchaseOrder[]> => {
     const config: AxiosRequestConfig = {
@@ -133,6 +132,30 @@ export const useFarmerListDropDown = (enabled: boolean) => {
   const queryClient = useQueryClient();
   return useMutation<ViewOrdersApiResponse, Error, number>({
     mutationFn: deletePurchaseOrder,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+    },
+  });
+  };
+
+
+
+
+    const submitDraftOrder = (order: PurchaseOrder): Promise<ViewOrdersApiResponse> => { 
+    
+    return apiClient.post<ViewOrdersApiResponse>('/order/purchase/submit', order)
+      .then((response) => {
+        if (response.message === "SUCCESS") {
+          return response;
+        }
+        throw new Error('Failed to submit draft order');
+      });
+  };
+
+ export const useSubmitDraftOrder = () => {
+  const queryClient = useQueryClient();
+  return useMutation<ViewOrdersApiResponse, Error, PurchaseOrder>({
+    mutationFn: submitDraftOrder,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
     },

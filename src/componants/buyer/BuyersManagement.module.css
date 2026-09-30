@@ -40,20 +40,6 @@
   background-color: #1d4ed8;
 }
 
-.viewButton {
-  background-color: #2563eb;
-  color: white;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.viewButton:hover {
-  background-color: #1d4ed8;
-}
-
 .tableWrapper {
   overflow-x: auto;
 }
@@ -262,19 +248,4 @@
 @keyframes slideUp {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
-}
-
-
-.closeButton {
-  background-color: #0b0d0f;
-  color: white;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.closeButton:hover {
-  background-color: #1d4ed8;
 }
