@@ -7,6 +7,7 @@ import { FarmersManagement } from './componants/farmersManagement/FarmersManagem
 import { ProductManagement } from './componants/products/ProductManagement';
 import { PurchaseOrders } from './componants/purchaseOrders/PurchaseOrders';
 import { BuyersManagement } from './componants/buyer/BuyersManagement';
+import {SalesOrders} from './componants/saleOrders/SalesOrders'
 
 
 
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: '/buyers',
         element : <BuyersManagement />
+      },
+      {
+        path: '/sales-orders',
+        element : <SalesOrders/>
       }
     ],
   },

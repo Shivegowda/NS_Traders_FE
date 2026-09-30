@@ -26,7 +26,7 @@ const MENU_ITEMS: MenuItem[] = [
   { id: 'Farmers', label: 'Farmers', icon: Users, path: '/farmers' },
   { id: 'Buyers', label: 'Buyers', icon: UserCheck, path: '/buyers' },
   { id: 'Purchase_Orders', label: 'Purchase Orders', icon: ShoppingCart, path: '/purchase-orders' },
-  { id: 'Sell_Orders', label: 'Sell Orders', icon: ShoppingCart, path: '/sell-orders' },
+  { id: 'Sell_Orders', label: 'Sales Orders', icon: ShoppingCart, path: '/sales-orders' },
   { id: 'products', label: 'Products', icon: ShoppingBasket, path: '/products' },
 ];
 
