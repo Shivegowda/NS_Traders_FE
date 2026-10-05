@@ -18,3 +18,20 @@ export interface ViewOrdersApiResponse {
   message: string;
 }
     
+
+export interface NewOrderPayload {
+                "amount": number;
+                "orderedBy": number;
+                "orderedByName": string;
+                "productId": number;
+                "productName":string;
+                "quantity":number;
+                "rate":number;
+}
+
+export interface SalesOrderApiResponse {
+    data: {
+    item: SalesOrder;
+  };
+  message: string;
+}
