@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useAddDraftOrder, useBuyerListDropDown, useSalesOrders } from "../../hooks/useSalesOrders";
-import type { NewOrderPayload } from "../../types/salesOrders.types";
+import { useAddDraftOrder, useBuyerListDropDown, useDeleteDraftOrder, useEditSalesOrder, useSalesOrders, useSubmitDraftOrder } from "../../hooks/useSalesOrders";
+import type { NewOrderPayload, SalesOrder } from "../../types/salesOrders.types";
 import { formatBackendTimestamp } from "../../utility/DateConversionUtility";
 import MenuPanel from "../MenuPanel/MenuPanel";
 import styles from "../saleOrders/SalesOrders.module.css"
@@ -23,13 +23,20 @@ export const SalesOrders: React.FC = () => {
 
 
           const { mutate: addDraftOrder } = useAddDraftOrder();
+              const { mutate: editSalesOrder } = useEditSalesOrder();
+              const { mutate: deleteDraftOrder } = useDeleteDraftOrder();
+              const {mutate: submitDraftOrder} = useSubmitDraftOrder();
       
 
             const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
             const [newDraftOrder, setNewDraftOrder] = useState<NewOrderPayload>(initialAddFormState);
+            const [isViewModalOpen, setIsViewModalOpen] = useState<boolean>(false);
+            const [editingSalesOrder, setEditingSalesOrder] = useState<SalesOrder | null>(null);
+
           
               const {data: productList = [], isLoading: isProductListLoading } = useProductListDropDown(isAddModalOpen);
               const {data: buyerList = [], isLoading: isBuyerListLoading } = useBuyerListDropDown(isAddModalOpen);
+              const {data: submittedOrders = [], isLoading: isSubmittedOrdersLoading, isError: isSubmittedOrdersError, error: submittedOrdersError } = useSalesOrders('ORDER');
             
 
              /* =========================================================================
@@ -74,6 +81,66 @@ export const SalesOrders: React.FC = () => {
         });
       };
 
+       /* =========================================================================
+           2. EDIT FORM ACTION HANDLERS
+           ========================================================================= */
+        const handleEditClick = (order: SalesOrder) => {
+          setEditingSalesOrder({ ...order });
+        };
+      
+        const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+          if (!editingSalesOrder) return;
+          const { name, value } = e.target;
+          const updatedOrder = { ...editingSalesOrder, [name]: value};
+          if (name === 'quantity' ) {
+            const newQuantity = Number(value) || 0;
+            const currentRate = Number(updatedOrder.rate) || 0;
+            updatedOrder.amount = newQuantity * currentRate;
+           }
+          setEditingSalesOrder(updatedOrder);
+        };
+      
+        const handleEditFormSubmit = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (!editingSalesOrder) return;
+      
+          if (window.confirm(`Are you sure you want to save modifications for "${editingSalesOrder.productName}"?`)) {
+            editSalesOrder(editingSalesOrder, {
+              onSuccess: () => {
+                setEditingSalesOrder(null); 
+              }
+            });
+          }
+        };
+      
+           /* =========================================================================
+           3. DELETE FORM ACTION HANDLERS
+           ========================================================================= */
+        const handleDeleteClick = (order: SalesOrder) => {
+          if (window.confirm(`Are you sure you want to Delete Draft order for ${order.productName}?`)) {
+           deleteDraftOrder(order.orderId, {
+              onSuccess: () => {
+                  alert('Draft order deleted successfully');
+           },
+            });
+          
+        };
+      };
+      
+       /* =========================================================================
+           3. SUBMIT FORM ACTION HANDLERS
+           ========================================================================= */
+      
+        const handleSubmitClick = (order: SalesOrder) => {
+        if (window.confirm(`Are you sure you want to Submit Draft order for ${order.productName}?`)) {
+          submitDraftOrder(order, {
+            onSuccess: () => {
+              alert('Draft order submitted successfully');
+            },
+          });
+        };
+      }
+
 
        return (
             <div className={styles.container}>
@@ -81,9 +148,9 @@ export const SalesOrders: React.FC = () => {
             <main className={styles.mainContent}>
         <div className={styles.header}>
           <h2>Sales Draft Orders</h2>
-          {/* <button className={styles.viewButton} onClick={() => setIsViewModalOpen(true)}>
+           <button className={styles.viewButton} onClick={() => setIsViewModalOpen(true)}>
           View Submitted Orders
-          </button>  */}
+          </button>  
            <button className={styles.addButton} onClick={() => setIsAddModalOpen(true)}>
             + Add New Product
           </button>  
@@ -210,6 +277,96 @@ export const SalesOrders: React.FC = () => {
           </div>
         </div>
       )}
+  {editingSalesOrder && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h3>Edit Sales Order Details</h3>
+            <form onSubmit={handleEditFormSubmit}>
+              <div className={styles.formGroup}>
+                <label>Product Name</label>
+                <label>{editingSalesOrder.productName}</label>
+              </div>
+              <div className={styles.formGroup}>
+                <label>Product Rate</label>
+                <label>{editingSalesOrder.rate}</label>
+              </div>
+              <div className={styles.formGroup}>
+                <label>Product quantity</label>
+                <input
+                  type="text"
+                  name="quantity"
+                  value={editingSalesOrder.quantity}
+                  onChange={handleEditInputChange}
+                  required
+                />
+              </div>
+             <div className={styles.formGroup}>
+                <label>Amount</label>
+                 <input
+                  type="text"
+                  name="amount"
+                  value={editingSalesOrder.quantity * editingSalesOrder.rate}
+                  onChange={handleEditInputChange}
+                  readOnly
+                  required
+                />
+              </div>
+              <div className={styles.modalActions}>
+                <button type="button" className={styles.cancelButton} onClick={() => setEditingSalesOrder(null)}>
+                  Cancel
+                </button>
+                <button type="submit" className={styles.saveButton}>
+                  Confirm & Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+       {isViewModalOpen && (
+         <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+          <h2>Purchase Submitted Orders</h2>
+     <div className={styles.tableWrapper}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Product Name</th>
+                <th>Product Rate</th>
+                <th>Product Quantity</th>
+                <th>Amount</th>
+                <th>Ordered By</th>
+                <th>Created Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {submittedOrders.map((submittedOrder) => (
+                <tr key={submittedOrder.orderId}>
+                  <td>{submittedOrder.orderId}</td>
+                  <td>{submittedOrder.productName}</td>
+                  <td>{submittedOrder.rate} </td>
+                  <td>{submittedOrder.quantity}</td>
+                  <td>{submittedOrder.amount}</td>
+                  <td>{submittedOrder.orderedByName}</td>
+                  <td>{formatBackendTimestamp(submittedOrder.createdDate)}</td>
+                </tr>
+              ))}
+              {submittedOrders.length === 0 && (
+                <tr>
+                  <td colSpan={7} className={styles.noData}>No submitted orders found.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+           <button className={styles.closeButton} onClick={() => setIsViewModalOpen(false)}>
+          Close
+        </button>
+        </div>
+        </div>
+        </div>
+     )}
+
 
       </div>
        );

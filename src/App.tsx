@@ -8,6 +8,7 @@ import { ProductManagement } from './componants/products/ProductManagement';
 import { PurchaseOrders } from './componants/purchaseOrders/PurchaseOrders';
 import { BuyersManagement } from './componants/buyer/BuyersManagement';
 import {SalesOrders} from './componants/saleOrders/SalesOrders'
+import { Inventory } from './componants/inventory/inventory';
 
 
 
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: '/sales-orders',
         element : <SalesOrders/>
+      },
+      {
+        path: '/inventory',
+        element: <Inventory />
       }
     ],
   },

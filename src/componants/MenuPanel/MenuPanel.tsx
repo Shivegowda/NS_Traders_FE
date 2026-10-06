@@ -28,6 +28,8 @@ const MENU_ITEMS: MenuItem[] = [
   { id: 'Purchase_Orders', label: 'Purchase Orders', icon: ShoppingCart, path: '/purchase-orders' },
   { id: 'Sell_Orders', label: 'Sales Orders', icon: ShoppingCart, path: '/sales-orders' },
   { id: 'products', label: 'Products', icon: ShoppingBasket, path: '/products' },
+  { id: 'inventory', label: 'Inventory', icon: ShoppingBasket, path: '/inventory' },
+
 ];
 
 export default function MenuPanel(): React.JSX.Element {

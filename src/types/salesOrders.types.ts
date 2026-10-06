@@ -35,3 +35,11 @@ export interface SalesOrderApiResponse {
   };
   message: string;
 }
+
+
+export interface EditSalesOrderRequest {
+  orderId: number;
+  quantity: number;
+  rate: number;
+  amount: number;
+}
